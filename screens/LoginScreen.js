@@ -1,6 +1,6 @@
 // LoginScreen.js
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { auth } from '../firebaseConfig'; // Ensure this path is correct
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
@@ -37,6 +37,13 @@ const LoginScreen = ({ navigation }) => {
         style={styles.input} 
       />
       <Button title="Login" onPress={handleSignIn} />
+      
+      {/* Sign Up navigation link */}
+      <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+        <Text style={styles.signupText}>
+          Don’t have an account? Sign Up
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -44,6 +51,7 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', padding: 20 },
   input: { height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10, paddingHorizontal: 8 },
+  signupText: { marginTop: 20, color: 'blue', textAlign: 'center' },
 });
 
 export default LoginScreen;
