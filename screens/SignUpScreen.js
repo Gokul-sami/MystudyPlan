@@ -1,24 +1,51 @@
-// SignUpScreen.js
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { View, TextInput, Button, StyleSheet, ActivityIndicator } from 'react-native';
 import { auth } from '../firebaseConfig'; // Ensure this path is correct
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 const SignUpScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSignUp = () => {
-    createUserWithEmailAndPassword(auth, email, password) // Updated call
-      .then(() => navigation.replace('Home'))
-      .catch(error => alert(error.message));
+    if (!email || !password) {
+      alert('Please fill out all fields');
+      return;
+    }
+
+    setLoading(true);
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        setLoading(false);
+        navigation.replace('Home');
+      })
+      .catch(error => {
+        setLoading(false);
+        alert(error.message);
+      });
   };
 
   return (
     <View style={styles.container}>
-      <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.input} />
-      <TextInput placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry style={styles.input} />
-      <Button title="Sign Up" onPress={handleSignUp} />
+      <TextInput 
+        placeholder="Email" 
+        value={email} 
+        onChangeText={setEmail} 
+        style={styles.input} 
+      />
+      <TextInput 
+        placeholder="Password" 
+        value={password} 
+        onChangeText={setPassword} 
+        secureTextEntry 
+        style={styles.input} 
+      />
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <Button title="Sign Up" onPress={handleSignUp} />
+      )}
     </View>
   );
 };

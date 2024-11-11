@@ -1,21 +1,27 @@
-// LoginScreen.js
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { auth } from '../firebaseConfig'; // Ensure this path is correct
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSignIn = () => {
+    if (!email || !password) {
+      alert('Please fill out all fields');
+      return;
+    }
+
+    setLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
-        // Successful login
+        setLoading(false);
         navigation.replace('Home');
       })
       .catch((error) => {
-        // Log the error for debugging
+        setLoading(false);
         console.error("Login Error: ", error);
         alert(error.message);
       });
@@ -36,9 +42,12 @@ const LoginScreen = ({ navigation }) => {
         secureTextEntry 
         style={styles.input} 
       />
-      <Button title="Login" onPress={handleSignIn} />
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <Button title="Login" onPress={handleSignIn} />
+      )}
       
-      {/* Sign Up navigation link */}
       <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
         <Text style={styles.signupText}>
           Don’t have an account? Sign Up

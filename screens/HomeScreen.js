@@ -1,32 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, FlatList, Platform, StatusBar } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen'; // Import splash screen
 import { useFonts } from 'expo-font';
-import AppLoading from 'expo-app-loading';
-import { Pacifico_400Regular } from '@expo-google-fonts/pacifico';
+import { Roboto_400Regular } from '@expo-google-fonts/roboto';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const DomainSelectionScreen = ({ navigation }) => {
-  // Load the custom font
+const HomeScreen = ({ navigation }) => {
+  // Prevent the splash screen from hiding automatically
+  SplashScreen.preventAutoHideAsync();
+
   const [fontsLoaded] = useFonts({
-    Pacifico: Pacifico_400Regular,
+    Roboto: Roboto_400Regular,
   });
 
   const [searchText, setSearchText] = useState('');
   const domains = [
-    { id: '1', name: 'DevOps', icon: require('../assets/devops.png') },
+    { id: '1', name: 'DevOps', icon: require('../assets/devops.bmp') },
     { id: '2', name: 'AI', icon: require('../assets/ai-icon.jpg') },
-    { id: '3', name: 'WebDev', icon: require('../assets/webdev-icon.png') },
-    { id: '4', name: 'Backend', icon: require('../assets/backend-icon.jpg') },
-    { id: '5', name: 'Database', icon: require('../assets/database-icon.png') },
-    { id: '6', name: 'Data Analytics', icon: require('../assets/data-analytics-icon.jpg') },
+    { id: '3', name: 'WebDev', icon: require('../assets/webdev.bmp') },
+    { id: '4', name: 'Backend', icon: require('../assets/backend.bmp') },
+    { id: '5', name: 'Database', icon: require('../assets/database.bmp') },
+    { id: '6', name: 'Data Analytics', icon: require('../assets/da.bmp') },
   ];
 
   const filteredDomains = domains.filter(domain =>
     domain.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
+  // Hide the splash screen once fonts are loaded
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return null; // Optionally show a loading indicator while fonts load
   }
 
   return (
@@ -49,7 +58,7 @@ const DomainSelectionScreen = ({ navigation }) => {
       </View>
 
       {/* Title */}
-      <Text style={styles.title}>Choose Your Domain?</Text>
+      <Text style={styles.title}>Choose Your Domain</Text>
 
       {/* Domain Grid with Searchable List */}
       <FlatList
@@ -58,7 +67,14 @@ const DomainSelectionScreen = ({ navigation }) => {
         numColumns={2}
         contentContainerStyle={styles.grid}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.domainBox}>
+          <TouchableOpacity
+            style={styles.domainBox}
+            onPress={() => {
+              if (item.name === 'DevOps') {
+                navigation.navigate('DevOps');
+              }
+            }}
+          >
             <Image source={item.icon} style={styles.icon} />
             <Text style={styles.domainText}>{item.name}</Text>
           </TouchableOpacity>
@@ -69,6 +85,10 @@ const DomainSelectionScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  grid: {
+    justifyContent: 'center', // Center items without flexWrap
+    paddingTop: 20,
+  },
   container: {
     flex: 1,
     backgroundColor: '#0e4a5d',
@@ -82,7 +102,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     textAlign: 'center',
     marginVertical: 20, // Adds spacing between the title and the list
-    fontFamily: 'Pacifico', // Use the custom font loaded
+    fontFamily: 'Roboto', // Use the custom font loaded
   },
   searchBarRow: {
     flexDirection: 'row', // Aligns the search bar and profile button horizontally
@@ -120,8 +140,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 10, // Adds margin between grid items
   },
   icon: {
-    width: 50,
-    height: 50,
+    width: 130,  // Increased icon size
+    height: 80, // Increased icon size
     marginBottom: 10,
   },
   domainText: {
@@ -131,4 +151,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DomainSelectionScreen;
+export default HomeScreen;
