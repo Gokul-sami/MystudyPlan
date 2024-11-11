@@ -64,7 +64,7 @@ const HomeScreen = ({ navigation }) => {
       <FlatList
         data={filteredDomains}
         keyExtractor={(item) => item.id}
-        numColumns={2}
+        numColumns={2} // Set columns to 2 instead of using flexWrap
         contentContainerStyle={styles.grid}
         renderItem={({ item }) => (
           <TouchableOpacity
@@ -80,6 +80,28 @@ const HomeScreen = ({ navigation }) => {
           </TouchableOpacity>
         )}
       />
+
+      {/* Bottom Navigation Buttons */}
+      <View style={styles.bottomNav}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate('Forum')}
+        >
+          <Text style={styles.navButtonText}>Forum</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate('Todo')}
+        >
+          <Text style={styles.navButtonText}>Todo</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate('Study')}
+        >
+          <Text style={styles.navButtonText}>Study</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -124,14 +146,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
   },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center', // Centers the grid horizontally
-    paddingTop: 20, // Adds spacing above the grid
-  },
   domainBox: {
-    width: '45%',
+    width: '45%', // Adjust size of each domain box to fit two columns
     backgroundColor: '#bfe8e0',
     borderRadius: 10,
     padding: 20,
@@ -148,6 +164,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#000',
+  },
+  bottomNav: {
+    flexDirection: 'row', // Align buttons in a row
+    justifyContent: 'space-around', // Space out buttons evenly
+    position: 'absolute', // Fix the position at the bottom
+    bottom: 20, // Add some space from the bottom edge
+    width: '100%', // Make the container full width
+  },
+  navButton: {
+    backgroundColor: '#2e6075',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  navButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

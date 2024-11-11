@@ -6,7 +6,7 @@ const ProfileScreen = () => {
   const [userInfo, setUserInfo] = useState({
     email: '',
     name: 'Your name',
-    age: '0',
+    age: '20',
     currentStudy: 'Eg: Computer Science',
   });
   const [isEditing, setIsEditing] = useState(false); // State to control edit mode
@@ -19,7 +19,7 @@ const ProfileScreen = () => {
       setUserInfo({
         email: user.email,
         name: user.displayName || 'Your name',
-        age: '25',
+        age: '20',
         currentStudy: 'Computer Science',
       });
     }
@@ -86,10 +86,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f4f4f4',
+    backgroundColor: '#0e4a5d',
     padding: 20,
   },
   title: {
+    color: '#ffffff',
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
@@ -99,14 +100,17 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   label: {
+    color: '#000000',
     fontSize: 16,
     fontWeight: '500',
   },
   text: {
+    color: '#ffffff',
     fontSize: 18,
     marginBottom: 10,
   },
   input: {
+    color: '#ffffff',
     height: 40,
     borderColor: '#ccc',
     borderWidth: 1,
