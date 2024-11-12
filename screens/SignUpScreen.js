@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, TextInput, Button, StyleSheet, ActivityIndicator, Text, TouchableOpacity } from 'react-native';
 import { auth } from '../firebaseConfig'; // Ensure this path is correct
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
@@ -28,31 +28,85 @@ const SignUpScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Create Account</Text>
+
       <TextInput 
         placeholder="Email" 
+        placeholderTextColor="#ccc" 
         value={email} 
         onChangeText={setEmail} 
         style={styles.input} 
       />
       <TextInput 
         placeholder="Password" 
+        placeholderTextColor="#ccc" 
         value={password} 
         onChangeText={setPassword} 
         secureTextEntry 
         style={styles.input} 
       />
+      
       {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#ffffff" />
       ) : (
-        <Button title="Sign Up" onPress={handleSignUp} />
+        <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+          <Text style={styles.buttonText}>Sign Up</Text>
+        </TouchableOpacity>
       )}
+      
+      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.loginText}>
+          Already have an account? Log In
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20 },
-  input: { height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10, paddingHorizontal: 8 },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#0e4a5d',
+    padding: 20,
+  },
+  title: {
+    color: '#ffffff',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  input: {
+    height: 50,
+    backgroundColor: '#1e5f6e',
+    borderRadius: 8,
+    color: '#ffffff',
+    paddingHorizontal: 15,
+    fontSize: 16,
+    width: '100%',
+    marginBottom: 15,
+  },
+  button: {
+    backgroundColor: '#ff7f50',
+    borderRadius: 8,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  loginText: {
+    color: '#ffffff',
+    fontSize: 14,
+    marginTop: 20,
+    textDecorationLine: 'underline',
+  },
 });
 
 export default SignUpScreen;

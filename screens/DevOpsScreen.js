@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Button, Alert } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
+import * as Progress from 'react-native-progress'; // Import Progress component
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 
 const DevOpsScreen = () => {
   const [links, setLinks] = useState([
@@ -18,6 +20,10 @@ const DevOpsScreen = () => {
   ]);
 
   const [selectedFile, setSelectedFile] = useState(null);
+  const [currentTopic, setCurrentTopic] = useState(0); // Track the current topic
+  const [progress, setProgress] = useState(0.38); // Default progress value (18%)
+
+  const navigation = useNavigation(); // Get navigation instance
 
   const handleLinkClick = (link) => {
     Linking.openURL(link).catch((err) => console.error('Failed to open URL:', err));
@@ -36,16 +42,23 @@ const DevOpsScreen = () => {
     }
   };
 
-  const renderTopic = (topic, link) => {
+  const renderTopic = (index, topic, link) => {
+    const isLeftAligned = index % 2 === 0; // Alternate alignment
     return (
-      <View style={styles.topicContainer} key={link}>
-        <Text style={styles.topicText}>{topic}</Text>
-        <TouchableOpacity
-          style={styles.dropdownButton}
-          onPress={() => handleLinkClick(link)}
-        >
-          <Text style={styles.buttonText}>Go to Link</Text>
-        </TouchableOpacity>
+      <View
+        style={[styles.topicContainer, isLeftAligned ? styles.alignLeft : styles.alignRight]}
+        key={link}
+      >
+        <Text style={styles.numberText}>{index + 1}.</Text>
+        <View style={styles.topicContent}>
+          <Text style={styles.topicText}>{topic}</Text>
+          <TouchableOpacity
+            style={styles.linkButton}
+            onPress={() => handleLinkClick(link)}
+          >
+            <Text style={styles.linkButtonText}>Go to Link</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
@@ -55,17 +68,30 @@ const DevOpsScreen = () => {
       <Text style={styles.title}>DevOps Learning Path</Text>
       <Text style={styles.subtitle}>Follow the topics from beginning to end to learn DevOps</Text>
 
-      {links.map((item) => renderTopic(item.topic, item.link))}
+      {/* Progress bar - placed under the title and description */}
+      <View style={styles.progressContainer}>
+        <Text style={styles.progressText}>Progress: {Math.round(progress * 100)}%</Text>
+        <Progress.Bar progress={progress} width={null} color="#2e6075" />
+      </View>
 
+      {/* Render topics */}
+      {links.map((item, index) => renderTopic(index, item.topic, item.link))}
+
+      {/* Show project section */}
       <View style={styles.projectContainer}>
         <Text style={styles.projectTitle}>Project</Text>
-        <Text style={styles.projectQuestion}>
+        <Text style={styles.projectDescription}>
           Develop a CI/CD pipeline to automate the deployment of a simple web application. Include steps for Continuous Integration, containerization, and automated deployment on a cloud platform.
         </Text>
-        <Button title="Submit Project File" onPress={handleFilePick} />
+        <Button title="Submit Project File" onPress={handleFilePick} color="#2e6075" />
         {selectedFile && (
           <Text style={styles.fileName}>Selected file: {selectedFile.name}</Text>
         )}
+      </View>
+
+      {/* Separate 'Go to Events' button */}
+      <View style={styles.eventsButtonContainer}>
+        <Button title="Go to Events" onPress={() => navigation.navigate('Events')} color="#2e6075" />
       </View>
     </ScrollView>
   );
@@ -75,7 +101,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0e4a5d',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 20,
   },
   title: {
     fontSize: 32,
@@ -90,47 +117,73 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 30,
   },
+  progressContainer: {
+    marginVertical: 20,
+    alignItems: 'center',
+  },
+  progressText: {
+    fontSize: 16,
+    color: '#ffffff',
+    marginBottom: 10,
+  },
   topicContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#2e6075',
     borderRadius: 10,
     padding: 15,
-    // backgroundColor: '#f9f9f9',
     backgroundColor: '#bfe8e0',
+    maxWidth: '80%',
+  },
+  alignLeft: {
+    alignSelf: 'flex-start',
+  },
+  alignRight: {
+    alignSelf: 'flex-end',
+  },
+  numberText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2e6075',
+    marginRight: 10,
+  },
+  topicContent: {
+    flex: 1,
   },
   topicText: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#000000',
   },
-  dropdownButton: {
+  linkButton: {
     marginTop: 10,
-    backgroundColor: '#2e3e50',
+    backgroundColor: '#2e6075',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
   },
-  buttonText: {
-    color: '#fff',
+  linkButtonText: {
+    color: '#ffffff',
     fontSize: 16,
   },
   projectContainer: {
     marginTop: 30,
     padding: 20,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#2e6075',
     borderRadius: 10,
-    backgroundColor: '#f1f1f1',
-    alignItems: 'center',
+    backgroundColor: '#bfe8e0',
   },
   projectTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 10,
+    textAlign: 'center',
   },
-  projectQuestion: {
+  projectDescription: {
     fontSize: 16,
     color: '#555',
     textAlign: 'center',
@@ -140,6 +193,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     color: '#555',
+    textAlign: 'center',
+  },
+  eventsButtonContainer: {
+    marginTop: 30,
+    marginBottom: 40,
+    // alignItems: 'center', // Center the button horizontally
   },
 });
 

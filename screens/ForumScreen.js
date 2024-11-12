@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 0 : 20,
     justifyContent: 'flex-start',
-    // alignItems: 'center',
   },
   title: {
     fontSize: 24,
@@ -114,10 +113,10 @@ const styles = StyleSheet.create({
   postTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#000', // Default color
+    color: '#000',
   },
   selectedPostTitle: {
-    color: '#ffffff', // Change color to white when selected
+    color: '#ffffff',
   },
   postDescription: {
     fontSize: 14,
@@ -151,7 +150,6 @@ const styles = StyleSheet.create({
   bottomNav: {
     marginTop: 20,
     width: '100%',
-    // alignItems: 'center',
   },
 });
 

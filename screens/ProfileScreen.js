@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Button, TextInput } from 'react-native';
-import { getAuth } from 'firebase/auth';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { getAuth, signOut, updateProfile } from 'firebase/auth';
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
   const [userInfo, setUserInfo] = useState({
     email: '',
     name: 'Your name',
     age: '20',
     currentStudy: 'Eg: Computer Science',
   });
-  const [isEditing, setIsEditing] = useState(false); // State to control edit mode
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const auth = getAuth();
@@ -25,21 +25,37 @@ const ProfileScreen = () => {
     }
   }, []);
 
-  const handleEditToggle = () => {
-    setIsEditing(!isEditing); // Toggle edit mode
-  };
+  const handleEditToggle = () => setIsEditing(!isEditing);
 
   const handleSave = () => {
-    // Save updated profile information here
+    const auth = getAuth();
+    const user = auth.currentUser;
+    
+    if (user) {
+      updateProfile(user, {
+        displayName: userInfo.name,
+      }).then(() => {
+        console.log('Profile updated');
+      }).catch(error => {
+        console.error('Error updating profile:', error);
+      });
+    }
+    
     console.log('Profile saved:', userInfo);
-    setIsEditing(false); // Exit edit mode after saving
+    setIsEditing(false);
   };
 
   const handleChange = (field, value) => {
-    setUserInfo(prevState => ({
-      ...prevState,
-      [field]: value,
-    }));
+    setUserInfo(prevState => ({ ...prevState, [field]: value }));
+  };
+
+  const handleSignOut = () => {
+    const auth = getAuth();
+    signOut(auth).then(() => {
+      navigation.replace('Login');
+    }).catch(error => {
+      console.error('Error signing out:', error);
+    });
   };
 
   return (
@@ -51,32 +67,47 @@ const ProfileScreen = () => {
         <Text style={styles.text}>{userInfo.email}</Text>
 
         <Text style={styles.label}>Name:</Text>
-        <TextInput
-          style={styles.input}
-          value={userInfo.name}
-          editable={isEditing} // Only editable when in edit mode
-          onChangeText={(text) => handleChange('name', text)}
-        />
+        {isEditing ? (
+          <TextInput
+            style={[styles.input, styles.editableInput]}
+            value={userInfo.name}
+            onChangeText={(text) => handleChange('name', text)}
+          />
+        ) : (
+          <Text style={styles.text}>{userInfo.name}</Text>
+        )}
 
         <Text style={styles.label}>Age:</Text>
-        <TextInput
-          style={styles.input}
-          value={userInfo.age}
-          editable={isEditing}
-          onChangeText={(text) => handleChange('age', text)}
-          keyboardType="numeric"
-        />
+        {isEditing ? (
+          <TextInput
+            style={[styles.input, styles.editableInput]}
+            value={userInfo.age}
+            onChangeText={(text) => handleChange('age', text)}
+            keyboardType="numeric"
+          />
+        ) : (
+          <Text style={styles.text}>{userInfo.age}</Text>
+        )}
 
         <Text style={styles.label}>Current Study:</Text>
-        <TextInput
-          style={styles.input}
-          value={userInfo.currentStudy}
-          editable={isEditing}
-          onChangeText={(text) => handleChange('currentStudy', text)}
-        />
+        {isEditing ? (
+          <TextInput
+            style={[styles.input, styles.editableInput]}
+            value={userInfo.currentStudy}
+            onChangeText={(text) => handleChange('currentStudy', text)}
+          />
+        ) : (
+          <Text style={styles.text}>{userInfo.currentStudy}</Text>
+        )}
       </View>
 
-      <Button title={isEditing ? "Save Profile" : "Edit Profile"} onPress={isEditing ? handleSave : handleEditToggle} />
+      <TouchableOpacity style={styles.button} onPress={isEditing ? handleSave : handleEditToggle}>
+        <Text style={styles.buttonText}>{isEditing ? "Save Profile" : "Edit Profile"}</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={[styles.button, styles.signOutButton]} onPress={handleSignOut}>
+        <Text style={styles.buttonText}>Sign Out</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -100,7 +131,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   label: {
-    color: '#000000',
+    color: '#ffffff',
     fontSize: 16,
     fontWeight: '500',
   },
@@ -110,7 +141,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-    color: '#ffffff',
     height: 40,
     borderColor: '#ccc',
     borderWidth: 1,
@@ -119,6 +149,29 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     fontSize: 16,
     width: '100%',
+    color: '#ffffff',
+    backgroundColor: '#2e6b78',
+  },
+  editableInput: {
+    backgroundColor: '#3b899c',
+  },
+  button: {
+    backgroundColor: '#1f8a9f',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 8,
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  signOutButton: {
+    backgroundColor: '#ff4d4d',
+    marginTop: 15,
   },
 });
 
