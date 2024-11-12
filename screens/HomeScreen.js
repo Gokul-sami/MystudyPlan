@@ -73,6 +73,21 @@ const HomeScreen = ({ navigation }) => {
               if (item.name === 'DevOps') {
                 navigation.navigate('DevOps');
               }
+              else if(item.name === 'AI') {
+                navigation.navigate('DevOps');
+              }
+              else if(item.name === 'WebDev') {
+                navigation.navigate('DevOps');
+              }
+              else if(item.name === 'Backend') {
+                navigation.navigate('DevOps');
+              }
+              else if(item.name === 'Database') {
+                navigation.navigate('DevOps');
+              }
+              else if(item.name === 'Data Analytics') {
+                navigation.navigate('DevOps');
+              }
             }}
           >
             <Image source={item.icon} style={styles.icon} />
