@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, Platform, StatusBar, Button } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Platform, StatusBar, TouchableOpacity } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const StudyScreen = ({ navigation }) => {
   const studyMaterial = [
@@ -22,6 +23,11 @@ const StudyScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {/* Back button in the top-left corner */}
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Ionicons name="arrow-back" size={28} color="#ffffff" />
+      </TouchableOpacity>
+
       <Text style={styles.title}>Study Materials</Text>
 
       {/* List of study materials */}
@@ -31,14 +37,10 @@ const StudyScreen = ({ navigation }) => {
         renderItem={({ item }) => (
           <View style={styles.materialItem}>
             <Text style={styles.subject}>{item.subject}</Text>
-            <Text>{item.description}</Text>
+            <Text style={styles.description}>{item.description}</Text>
           </View>
         )}
       />
-
-      <View style={styles.bottomNav}>
-        <Button title="Back to Home" onPress={() => navigation.goBack()} color="#2e6075" />
-      </View>
     </View>
   );
 };
@@ -48,33 +50,41 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0e4a5d',
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 0 : 20,
-    justifyContent: 'flex-start',
-    // alignItems: 'center',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 20 : 30,
+  },
+  backButton: {
+    position: 'absolute',
+    top: Platform.OS === 'android' ? StatusBar.currentHeight + 10 : 20,
+    left: 20,
+    zIndex: 1,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     color: '#ffffff',
     textAlign: 'center',
-    marginVertical: 20,
-    fontFamily: 'Roboto',
+    marginTop: 70,
+    fontWeight: '600',
   },
   materialItem: {
-    backgroundColor: '#bfe8e0',
+    backgroundColor: '#e0f7f5',
     padding: 15,
-    borderRadius: 8,
-    marginVertical: 10,
-    width: '100%',
+    borderRadius: 12,
+    marginVertical: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3,
   },
   subject: {
-    fontSize: 18,
-    color: '#000',
-    marginBottom: 5, // Added margin to separate subject from description
+    fontSize: 20,
+    color: '#084C61',
+    fontWeight: '500',
+    marginBottom: 5,
   },
-  bottomNav: {
-    marginTop: 20,
-    width: '100%',
-    // alignItems: 'center',
+  description: {
+    fontSize: 16,
+    color: '#333333',
   },
 });
 

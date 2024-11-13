@@ -1,89 +1,39 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, TextInput, FlatList, TouchableOpacity, Platform, StatusBar } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Platform, StatusBar } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const ForumScreen = ({ navigation }) => {
-  const [forumPosts, setForumPosts] = useState([
-    { id: '1', title: 'Post 1', description: 'Discussion about DevOps', comments: [] },
-    { id: '2', title: 'Post 2', description: 'Discussion about AI', comments: [] },
-    { id: '3', title: 'Post 3', description: 'Discussion about Web Development', comments: [] },
-  ]);
+  const forumPosts = [
+    { id: '1', title: 'Post 1', description: 'Discussion about DevOps' },
+    { id: '2', title: 'Post 2', description: 'Discussion about AI' },
+    { id: '3', title: 'Post 3', description: 'Discussion about Web Development' },
+  ];
 
-  const [newMessage, setNewMessage] = useState('');
-  const [selectedPost, setSelectedPost] = useState(null);
-
-  const handlePostMessage = () => {
-    if (newMessage.trim() === '') return;
-    const updatedPosts = [...forumPosts];
-    const postIndex = updatedPosts.findIndex((post) => post.id === selectedPost);
-    
-    if (postIndex > -1) {
-      updatedPosts[postIndex].comments.push({
-        id: new Date().toISOString(),
-        message: newMessage,
-      });
-      setForumPosts(updatedPosts);
-      setNewMessage('');
-    }
-  };
-
-  const handleSelectPost = (postId) => {
-    setSelectedPost(postId);
+  const handleSelectPost = (post) => {
+    navigation.navigate('PostDetail', { post });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Forum</Text>
-      
-      {selectedPost ? (
-        <View style={styles.postContainer}>
-          <Text style={styles.postTitle}>{forumPosts.find(post => post.id === selectedPost)?.title}</Text>
-          <Text style={styles.postDescription}>{forumPosts.find(post => post.id === selectedPost)?.description}</Text>
-          
-          <FlatList
-            data={forumPosts.find(post => post.id === selectedPost)?.comments}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View style={styles.commentBox}>
-                <Text style={styles.commentText}>{item.message}</Text>
-              </View>
-            )}
-          />
-          
-          <TextInput
-            style={styles.input}
-            placeholder="Write a comment..."
-            value={newMessage}
-            onChangeText={setNewMessage}
-          />
-          <Button title="Post Comment" onPress={handlePostMessage} color="#2e6075" />
-          <Button title="Back to Posts" onPress={() => setSelectedPost(null)} color="#2e6075" />
-        </View>
-      ) : (
-        <FlatList
-          data={forumPosts}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity 
-              style={styles.post} 
-              onPress={() => handleSelectPost(item.id)}
-            >
-              <Text
-                style={[
-                  styles.postTitle,
-                  selectedPost === item.id && styles.selectedPostTitle // Change color if post is selected
-                ]}
-              >
-                {item.title}
-              </Text>
-              <Text style={styles.postDescription}>{item.description}</Text>
-            </TouchableOpacity>
-          )}
-        />
-      )}
-
-      <View style={styles.bottomNav}>
-        <Button title="Back to Home" onPress={() => navigation.goBack()} color="#2e6075" />
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon name="arrow-back" size={24} color="#ffffff" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Forum</Text>
       </View>
+      <FlatList
+        data={forumPosts}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.post}
+            onPress={() => handleSelectPost(item)}
+          >
+            <Text style={styles.postTitle}>{item.title}</Text>
+            <Text style={styles.postDescription}>{item.description}</Text>
+          </TouchableOpacity>
+        )}
+      />
     </View>
   );
 };
@@ -93,63 +43,34 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0e4a5d',
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 0 : 20,
-    justifyContent: 'flex-start',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 10 : 20,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
   },
   title: {
     fontSize: 24,
     color: '#ffffff',
     textAlign: 'center',
-    marginVertical: 20,
-    fontFamily: 'Roboto',
+    flex: 1,
   },
   post: {
     backgroundColor: '#bfe8e0',
     padding: 15,
-    borderRadius: 8,
+    borderRadius: 10,
     marginVertical: 10,
-    width: '100%',
   },
   postTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#000',
-  },
-  selectedPostTitle: {
-    color: '#ffffff',
+    color: '#2e6075',
   },
   postDescription: {
     fontSize: 14,
-    color: '#555',
-  },
-  postContainer: {
-    flex: 1,
-    width: '100%',
-    paddingBottom: 20,
-    paddingTop: 10,
-  },
-  commentBox: {
-    backgroundColor: '#e0e0e0',
-    padding: 10,
-    borderRadius: 8,
-    marginVertical: 5,
-  },
-  commentText: {
-    fontSize: 14,
-    color: '#000',
-  },
-  input: {
-    height: 40,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    marginTop: 10,
-    paddingLeft: 8,
-    borderRadius: 8,
-    width: '100%',
-  },
-  bottomNav: {
-    marginTop: 20,
-    width: '100%',
+    color: '#333',
+    marginTop: 5,
   },
 });
 

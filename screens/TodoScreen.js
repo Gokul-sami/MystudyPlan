@@ -30,6 +30,11 @@ const TodoScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {/* Back button in the top-left corner */}
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Icon name="arrow-back" size={24} color="#fff" />
+      </TouchableOpacity>
+
       <Text style={styles.title}>Todo List</Text>
 
       <View style={styles.inputRow}>
@@ -59,11 +64,6 @@ const TodoScreen = ({ navigation }) => {
           </View>
         )}
       />
-
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Icon name="arrow-back" size={24} color="#fff" />
-        <Text style={styles.backButtonText}>Back to Home</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -76,11 +76,18 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 20 : 20,
     justifyContent: 'flex-start',
   },
+  backButton: {
+    position: 'absolute',
+    top: Platform.OS === 'android' ? StatusBar.currentHeight + 10 : 20,
+    left: 20,
+    zIndex: 1,
+  },
   title: {
     fontSize: 28,
     color: '#ffffff',
     textAlign: 'center',
-    marginVertical: 20,
+    marginTop: 70,
+    marginBottom: 20,
     fontWeight: 'bold',
   },
   inputRow: {
@@ -136,21 +143,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#2e6075',
-    padding: 15,
-    borderRadius: 10,
-    marginTop: 20,
-    justifyContent: 'center',
-  },
-  backButtonText: {
-    color: '#ffffff',
-    fontSize: 18,
-    marginLeft: 8,
-    fontWeight: 'bold',
   },
 });
 
