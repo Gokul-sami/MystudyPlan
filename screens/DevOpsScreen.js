@@ -7,10 +7,10 @@ import { WebView } from 'react-native-webview';
 
 const DevOpsScreen = () => {
   const [links, setLinks] = useState([
-    { id: 1, topic: 'Introduction to DevOps', link: 'https://www.javatpoint.com/devops' },
-    { id: 2, topic: 'Continuous Integration', link: 'https://www.redhat.com/en/topics/devops/what-is-ci-cd' },
-    { id: 3, topic: 'Version Control Systems', link: 'https://example.com/version-control' },
-    { id: 4, topic: 'Continuous Deployment', link: 'https://example.com/continuous-deployment' },
+    { id: 1, topic: 'Introduction to DevOps', link: 'https://www.atlassian.com/devops' },
+    { id: 2, topic: 'Continuous Integration', link: 'https://www.atlassian.com/continuous-delivery/continuous-integration' },
+    { id: 3, topic: 'Version Control Systems', link: 'https://www.atlassian.com/git/tutorials/what-is-version-control' },
+    { id: 4, topic: 'Continuous Deployment', link: 'https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment' },
     { id: 5, topic: 'Monitoring & Logging', link: 'https://example.com/monitoring-logging' },
     { id: 6, topic: 'Infrastructure as Code', link: 'https://example.com/infrastructure-as-code' },
     { id: 7, topic: 'Containers & Orchestration', link: 'https://example.com/containers-orchestration' },
@@ -114,9 +114,9 @@ const styles = StyleSheet.create({
   projectTitle: { fontSize: 24, fontWeight: 'bold', color: '#000000' },
   projectDescription: { marginTop: 10, fontSize: 16, color: '#555' },
   fileName: { marginTop: 10, fontSize: 16, color: '#2e6075' },
-  eventsButtonContainer: { marginTop: 30, alignItems: 'center' },
+  eventsButtonContainer: { marginTop: 30, alignItems: 'center', marginBottom: 40 },
   modalContainer: { flex: 1, backgroundColor: '#0e4a5d', paddingTop: 40 },
-  closeButton: { padding: 10, backgroundColor: '#2e6075', borderRadius: 5, alignItems: 'center', margin: 10, marginBottom: 50 },
+  closeButton: { padding: 10, backgroundColor: '#2e6075', borderRadius: 5, alignItems: 'center', margin: 10, marginBottom: 20 },
   closeButtonText: { color: '#ffffff', fontSize: 16 },
   webView: { flex: 1 },
 });

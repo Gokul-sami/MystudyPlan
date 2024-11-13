@@ -6,7 +6,6 @@ import { Roboto_400Regular } from '@expo-google-fonts/roboto';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const HomeScreen = ({ navigation }) => {
-  // Prevent the splash screen from hiding automatically
   SplashScreen.preventAutoHideAsync();
 
   const [fontsLoaded] = useFonts({
@@ -21,13 +20,18 @@ const HomeScreen = ({ navigation }) => {
     { id: '4', name: 'Backend', icon: require('../assets/backend.bmp') },
     { id: '5', name: 'Database', icon: require('../assets/database.bmp') },
     { id: '6', name: 'Data Analytics', icon: require('../assets/da.bmp') },
+    { id: '1', name: 'DevOps', icon: require('../assets/devops.bmp') },
+    { id: '2', name: 'AI', icon: require('../assets/ai-icon.jpg') },
+    { id: '3', name: 'WebDev', icon: require('../assets/webdev.bmp') },
+    { id: '4', name: 'Backend', icon: require('../assets/backend.bmp') },
+    { id: '5', name: 'Database', icon: require('../assets/database.bmp') },
+    { id: '6', name: 'Data Analytics', icon: require('../assets/da.bmp') },
   ];
 
   const filteredDomains = domains.filter(domain =>
     domain.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  // Hide the splash screen once fonts are loaded
   useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
@@ -35,12 +39,11 @@ const HomeScreen = ({ navigation }) => {
   }, [fontsLoaded]);
 
   if (!fontsLoaded) {
-    return null; // Optionally show a loading indicator while fonts load
+    return null;
   }
 
   return (
     <View style={styles.container}>
-      {/* Search Bar and Profile Button in the same row */}
       <View style={styles.searchBarRow}>
         <TextInput
           style={styles.searchBar}
@@ -51,53 +54,13 @@ const HomeScreen = ({ navigation }) => {
         />
         <TouchableOpacity
           style={styles.profileButton}
-          onPress={() => navigation.navigate('Profile')}  // Navigates to Profile page
+          onPress={() => navigation.navigate('Profile')}
         >
           <Icon name="user" size={25} color="#ffffff" />
         </TouchableOpacity>
       </View>
 
-      {/* Title */}
-      <Text style={styles.title}>Choose Your Domain</Text>
-
-      {/* Domain Grid with Searchable List */}
-      <FlatList
-        data={filteredDomains}
-        keyExtractor={(item) => item.id}
-        numColumns={2} // Set columns to 2 instead of using flexWrap
-        contentContainerStyle={styles.grid}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.domainBox}
-            onPress={() => {
-              if (item.name === 'DevOps') {
-                navigation.navigate('DevOps');
-              }
-              else if(item.name === 'AI') {
-                navigation.navigate('DevOps');
-              }
-              else if(item.name === 'WebDev') {
-                navigation.navigate('DevOps');
-              }
-              else if(item.name === 'Backend') {
-                navigation.navigate('DevOps');
-              }
-              else if(item.name === 'Database') {
-                navigation.navigate('DevOps');
-              }
-              else if(item.name === 'Data Analytics') {
-                navigation.navigate('DevOps');
-              }
-            }}
-          >
-            <Image source={item.icon} style={styles.icon} />
-            <Text style={styles.domainText}>{item.name}</Text>
-          </TouchableOpacity>
-        )}
-      />
-
-      {/* Bottom Navigation Buttons */}
-      <View style={styles.bottomNav}>
+      <View style={styles.topNav}>
         <TouchableOpacity
           style={styles.navButton}
           onPress={() => navigation.navigate('Forum')}
@@ -117,86 +80,101 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.navButtonText}>Study</Text>
         </TouchableOpacity>
       </View>
+
+      <Text style={styles.title}>Choose Your Domain</Text>
+
+      <FlatList
+        data={filteredDomains}
+        keyExtractor={(item) => item.id}
+        numColumns={2}
+        contentContainerStyle={styles.grid}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.domainBox}
+            onPress={() => navigation.navigate('DevOps')}
+          >
+            <Image source={item.icon} style={styles.icon} />
+            <Text style={styles.domainText}>{item.name}</Text>
+          </TouchableOpacity>
+        )}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  grid: {
-    justifyContent: 'center', // Center items without flexWrap
-    paddingTop: 20,
-  },
   container: {
     flex: 1,
     backgroundColor: '#0e4a5d',
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 20 : 20, // Added padding to prevent notch overlap
-    justifyContent: 'center', // Center all components vertically
-    alignItems: 'center', // Center all components horizontally
-  },
-  title: {
-    fontSize: 24,
-    color: '#ffffff',
-    textAlign: 'center',
-    marginVertical: 20, // Adds spacing between the title and the list
-    fontFamily: 'Roboto', // Use the custom font loaded
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 20 : 20,
+    alignItems: 'center',
   },
   searchBarRow: {
-    flexDirection: 'row', // Aligns the search bar and profile button horizontally
-    justifyContent: 'center', // Centers the search bar and profile button horizontally
-    alignItems: 'center', // Aligns them vertically
-    marginBottom: 20, // Space below the search bar and profile button
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
   },
   searchBar: {
     backgroundColor: '#ffffff',
-    padding: 8, // Reduced padding to make it smaller
+    padding: 8,
     borderRadius: 8,
     color: '#000',
-    fontSize: 14, // Reduced font size
-    width: '70%', // Adjusted width to fit within the row
-    marginRight: 10, // Added margin to the right of the search bar
+    fontSize: 14,
+    width: '70%',
+    marginRight: 10,
   },
   profileButton: {
     backgroundColor: '#2e6075',
     padding: 10,
     borderRadius: 8,
   },
+  topNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginBottom: 20,
+  },
+  navButton: {
+    backgroundColor: '#2e6075',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    marginHorizontal: 5,
+  },
+  navButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  title: {
+    fontSize: 24,
+    color: '#ffffff',
+    marginVertical: 20,
+    fontFamily: 'Roboto',
+  },
+  grid: {
+    justifyContent: 'center',
+    paddingTop: 20,
+  },
   domainBox: {
-    width: '45%', // Adjust size of each domain box to fit two columns
+    width: '45%',
     backgroundColor: '#bfe8e0',
     borderRadius: 10,
     padding: 20,
     marginBottom: 15,
     alignItems: 'center',
-    marginHorizontal: 10, // Adds margin between grid items
+    marginHorizontal: 10,
   },
   icon: {
-    width: 130,  // Increased icon size
-    height: 80, // Increased icon size
+    width: 130,
+    height: 80,
     marginBottom: 10,
   },
   domainText: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#000',
-  },
-  bottomNav: {
-    flexDirection: 'row', // Align buttons in a row
-    justifyContent: 'space-around', // Space out buttons evenly
-    position: 'absolute', // Fix the position at the bottom
-    bottom: 20, // Add some space from the bottom edge
-    width: '100%', // Make the container full width
-  },
-  navButton: {
-    backgroundColor: '#2e6075',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-  },
-  navButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 });
 
