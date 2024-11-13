@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, FlatList, Platform, StatusBar } from 'react-native';
-import * as SplashScreen from 'expo-splash-screen'; // Import splash screen
+import * as SplashScreen from 'expo-splash-screen'; 
 import { useFonts } from 'expo-font';
 import { Roboto_400Regular } from '@expo-google-fonts/roboto';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -14,12 +14,6 @@ const HomeScreen = ({ navigation }) => {
 
   const [searchText, setSearchText] = useState('');
   const domains = [
-    { id: '1', name: 'DevOps', icon: require('../assets/devops.bmp') },
-    { id: '2', name: 'AI', icon: require('../assets/ai-icon.jpg') },
-    { id: '3', name: 'WebDev', icon: require('../assets/webdev.bmp') },
-    { id: '4', name: 'Backend', icon: require('../assets/backend.bmp') },
-    { id: '5', name: 'Database', icon: require('../assets/database.bmp') },
-    { id: '6', name: 'Data Analytics', icon: require('../assets/da.bmp') },
     { id: '1', name: 'DevOps', icon: require('../assets/devops.bmp') },
     { id: '2', name: 'AI', icon: require('../assets/ai-icon.jpg') },
     { id: '3', name: 'WebDev', icon: require('../assets/webdev.bmp') },
@@ -56,7 +50,7 @@ const HomeScreen = ({ navigation }) => {
           style={styles.profileButton}
           onPress={() => navigation.navigate('Profile')}
         >
-          <Icon name="user" size={25} color="#ffffff" />
+          <Icon name="user" size={20} color="#ffffff" />
         </TouchableOpacity>
       </View>
 
@@ -106,52 +100,55 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0e4a5d',
-    paddingHorizontal: 20,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 20 : 20,
+    paddingHorizontal: 16,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 10 : 10,
     alignItems: 'center',
   },
   searchBarRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
   },
   searchBar: {
     backgroundColor: '#ffffff',
     padding: 8,
-    borderRadius: 8,
-    color: '#000',
+    borderRadius: 12,
     fontSize: 14,
-    width: '70%',
-    marginRight: 10,
+    width: '75%',
+    marginRight: 8,
+    color: '#333',
+    elevation: 1,
   },
   profileButton: {
-    backgroundColor: '#2e6075',
+    backgroundColor: '#005f73',
     padding: 10,
-    borderRadius: 8,
+    borderRadius: 12,
+    elevation: 1,
   },
   topNav: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     width: '100%',
     marginBottom: 20,
   },
   navButton: {
-    backgroundColor: '#2e6075',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-    marginHorizontal: 5,
+    backgroundColor: '#94d2bd',
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+    borderRadius: 12,
+    marginHorizontal: 6,
   },
   navButtonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: '#0e4a5d',
+    fontSize: 14,
     fontWeight: 'bold',
   },
   title: {
-    fontSize: 24,
+    fontSize: 22,
     color: '#ffffff',
-    marginVertical: 20,
+    marginVertical: 18,
     fontFamily: 'Roboto',
+    textAlign: 'center',
   },
   grid: {
     justifyContent: 'center',
@@ -160,21 +157,22 @@ const styles = StyleSheet.create({
   domainBox: {
     width: '45%',
     backgroundColor: '#bfe8e0',
-    borderRadius: 10,
-    padding: 20,
+    borderRadius: 15,
+    padding: 18,
     marginBottom: 15,
     alignItems: 'center',
     marginHorizontal: 10,
+    elevation: 2,
   },
   icon: {
-    width: 130,
-    height: 80,
-    marginBottom: 10,
+    width: 100,
+    height: 60,
+    marginBottom: 8,
   },
   domainText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000',
+    fontWeight: '600',
+    color: '#333',
   },
 });
 

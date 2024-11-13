@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Platform, StatusBar, Button } from 'react-native';
+import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Platform, StatusBar } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const TodoScreen = ({ navigation }) => {
   const [task, setTask] = useState('');
@@ -30,45 +31,39 @@ const TodoScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Todo List</Text>
-      <TextInput
-        style={styles.input}
-        value={task}
-        onChangeText={setTask}
-        placeholder="Enter task"
-        placeholderTextColor="#ddd"
-      />
-      <Button title="Add Task" onPress={addTask} color="#2e6075" />
+
+      <View style={styles.inputRow}>
+        <TextInput
+          style={styles.input}
+          value={task}
+          onChangeText={setTask}
+          placeholder="Enter task"
+          placeholderTextColor="#aaa"
+        />
+        <TouchableOpacity style={styles.addButton} onPress={addTask}>
+          <Icon name="add" size={24} color="#fff" />
+        </TouchableOpacity>
+      </View>
 
       <FlatList
         data={tasks}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.taskItem}>
-            <View style={styles.taskContent}>
-              <TouchableOpacity onPress={() => toggleTaskCompletion(item.id)}>
-                <Text
-                  style={[
-                    styles.taskText,
-                    item.completed && styles.completedTask,
-                  ]}
-                >
-                  {item.name}
-                </Text>
+            <TouchableOpacity onPress={() => toggleTaskCompletion(item.id)} style={styles.taskContent}>
+              <Text style={[styles.taskText, item.completed && styles.completedTask]}>{item.name}</Text>
+              <TouchableOpacity style={styles.removeButton} onPress={() => removeTask(item.id)}>
+                <Icon name="delete" size={20} color="#FF6347" />
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.removeButton}
-                onPress={() => removeTask(item.id)}
-              >
-                <Text style={styles.removeText}>X</Text>
-              </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
           </View>
         )}
       />
 
-      <View style={styles.bottomNav}>
-        <Button title="Back to Home" onPress={() => navigation.goBack()} color="#2e6075" />
-      </View>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Icon name="arrow-back" size={24} color="#fff" />
+        <Text style={styles.backButtonText}>Back to Home</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -78,41 +73,57 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0e4a5d',
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 0 : 20,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 20 : 20,
     justifyContent: 'flex-start',
-    alignItems: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     color: '#ffffff',
     textAlign: 'center',
     marginVertical: 20,
-    fontFamily: 'Roboto',
+    fontWeight: 'bold',
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
   },
   input: {
-    width: '80%',
+    flex: 1,
     padding: 10,
-    borderWidth: 1,
-    marginBottom: 10,
-    borderColor: '#ffffff',
-    color: '#ffffff',
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    color: '#333',
+    marginRight: 10,
+  },
+  addButton: {
+    backgroundColor: '#2e6075',
+    padding: 15,
+    borderRadius: 10,
   },
   taskItem: {
     backgroundColor: '#bfe8e0',
     padding: 15,
     borderRadius: 8,
     marginVertical: 10,
-    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
   },
   taskContent: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    width: '90%',
   },
   taskText: {
     fontSize: 18,
     color: '#000',
-    marginLeft: 10,
     flex: 1,
   },
   completedTask: {
@@ -120,18 +131,26 @@ const styles = StyleSheet.create({
     color: '#888',
   },
   removeButton: {
-    backgroundColor: '#FF6347',
-    padding: 10,
-    borderRadius: 50,
+    backgroundColor: '#ffffff',
+    padding: 8,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  removeText: {
-    color: '#fff',
-    fontSize: 20,
-  },
-  bottomNav: {
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2e6075',
+    padding: 15,
+    borderRadius: 10,
     marginTop: 20,
-    width: '100%',
-    // alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backButtonText: {
+    color: '#ffffff',
+    fontSize: 18,
+    marginLeft: 8,
+    fontWeight: 'bold',
   },
 });
 
