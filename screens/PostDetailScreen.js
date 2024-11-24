@@ -1,16 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Platform, StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { getFirestore, collection, addDoc, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { auth } from '../firebaseConfig'; // Assuming you have firebase.js where you initialize firebase
+
+const db = getFirestore(); // Initialize Firestore
 
 const PostDetailScreen = ({ route, navigation }) => {
   const { post } = route.params;
   const [newMessage, setNewMessage] = useState('');
   const [comments, setComments] = useState([]);
 
-  const handlePostMessage = () => {
+  // Fetch comments in real-time
+  useEffect(() => {
+    const commentsRef = collection(db, 'posts', post.id, 'comments');
+    const q = query(commentsRef, orderBy('createdAt', 'asc'));
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const fetchedComments = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        message: doc.data().message,
+        createdAt: doc.data().createdAt.toDate(),
+      }));
+      setComments(fetchedComments);
+    });
+
+    // Clean up the listener when the component unmounts
+    return () => unsubscribe();
+  }, [post.id]);
+
+  // Handle posting a new comment
+  const handlePostMessage = async () => {
     if (newMessage.trim() === '') return;
-    setComments([...comments, { id: new Date().toISOString(), message: newMessage }]);
-    setNewMessage('');
+
+    try {
+      await addDoc(collection(db, 'posts', post.id, 'comments'), {
+        message: newMessage,
+        createdAt: new Date(),
+      });
+      setNewMessage(''); // Clear input after posting
+    } catch (error) {
+      console.error("Error posting comment: ", error);
+    }
   };
 
   return (
