@@ -4,18 +4,20 @@ import * as DocumentPicker from 'expo-document-picker';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { WebView } from 'react-native-webview';
+import * as Progress from 'react-native-progress'; // Import the progress bar
 
 const DevOpsScreen = () => {
   const [links, setLinks] = useState([
-    { id: 1, topic: 'Introduction to DevOps', link: 'https://www.atlassian.com/devops' },
-    { id: 2, topic: 'Continuous Integration', link: 'https://www.atlassian.com/continuous-delivery/continuous-integration' },
-    { id: 3, topic: 'Version Control Systems', link: 'https://www.atlassian.com/git/tutorials/what-is-version-control' },
-    { id: 4, topic: 'Continuous Deployment', link: 'https://www.atlassian.com/continuous-delivery/principles/continuous-integration-vs-delivery-vs-deployment' },
-    { id: 5, topic: 'Monitoring & Logging', link: 'https://example.com/monitoring-logging' },
-    { id: 6, topic: 'Infrastructure as Code', link: 'https://example.com/infrastructure-as-code' },
-    { id: 7, topic: 'Containers & Orchestration', link: 'https://example.com/containers-orchestration' },
-    { id: 8, topic: 'Cloud Computing Basics', link: 'https://example.com/cloud-computing' },
-    { id: 9, topic: 'DevOps Tools Overview', link: 'https://example.com/devops-tools' },
+    { id: 1, topic: 'DevOps Roadmap', link: 'https://roadmap.sh/devops' },
+    { id: 2, topic: 'Introduction to DevOps', link: 'https://opensource.com/article/21/3/devops-documentation' },
+    { id: 3, topic: 'Continuous Integration', link: 'https://docs.gitlab.com/ee/ci/' },
+    { id: 4, topic: 'Version Control Systems', link: 'https://git-scm.com/book/ms/v2/Getting-Started-About-Version-Control' },
+    { id: 5, topic: 'Continuous Deployment', link: 'https://docs.gitlab.com/ee/ci/' },
+    { id: 6, topic: 'Monitoring & Logging', link: 'https://help.sap.com/doc/saphelp_aii710/7.1/en-US/48/e95541ecfd280ce10000000a42189c/content.htm?no_cache=true' },
+    { id: 7, topic: 'Infrastructure as Code', link: 'https://www.cloudknit.io/blog/principles-patterns-and-practices-for-effective-infrastructure-as-code' },
+    { id: 8, topic: 'Containers & Orchestration', link: 'https://www.redhat.com/en/topics/containers/what-is-container-orchestration' },
+    { id: 9, topic: 'Cloud Computing Basics', link: 'https://www.lucidchart.com/blog/cloud-computing-basics' },
+    { id: 10, topic: 'DevOps Tools Overview', link: 'https://www.javatpoint.com/devops-tools' },
   ]);
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -65,7 +67,16 @@ const DevOpsScreen = () => {
 
       <View style={styles.progressContainer}>
         <Text style={styles.progressText}>Progress: {Math.round(progress * 100)}%</Text>
-        <LinearGradient colors={['#2e6075', '#bfe8e0']} start={[0, 0]} end={[1, 0]} style={[styles.progressBar, { width: `${progress * 100}%` }]} />
+        <Progress.Circle
+          size={150}
+          progress={progress}
+          showsText={true}
+          formatText={(percentage) => `${Math.round(percentage * 100)}%`}
+          color="#2e6075"
+          unfilledColor="#f0f0f0"
+          borderWidth={10}
+          thickness={8}
+        />
       </View>
 
       {links.map((item, index) => renderTopic(index, item.topic, item.link, item.id))}
@@ -101,7 +112,6 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 18, color: '#ffffff', textAlign: 'center', marginBottom: 30 },
   progressContainer: { marginVertical: 20, alignItems: 'center' },
   progressText: { fontSize: 16, color: '#ffffff', marginBottom: 10 },
-  progressBar: { height: 10, borderRadius: 5 },
   topicContainer: { flexDirection: 'row', marginBottom: 20, borderWidth: 1, borderColor: '#2e6075', borderRadius: 10, padding: 15, backgroundColor: '#bfe8e0', maxWidth: '80%' },
   alignLeft: { alignSelf: 'flex-start' },
   alignRight: { alignSelf: 'flex-end' },

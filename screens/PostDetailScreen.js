@@ -1,70 +1,135 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Platform, StatusBar } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+  Platform,
+  StatusBar,
+  Alert,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { getFirestore, collection, addDoc, onSnapshot, orderBy, query } from 'firebase/firestore';
-import { auth } from '../firebaseConfig'; // Assuming you have firebase.js where you initialize firebase
+import { getFirestore, collection, addDoc, onSnapshot, orderBy, query, updateDoc, doc } from 'firebase/firestore';
+import { auth } from '../firebaseConfig';
 
-const db = getFirestore(); // Initialize Firestore
+const db = getFirestore();
 
 const PostDetailScreen = ({ route, navigation }) => {
   const { post } = route.params;
   const [newMessage, setNewMessage] = useState('');
   const [comments, setComments] = useState([]);
 
-  // Fetch comments in real-time
+  // Fetch comments
   useEffect(() => {
     const commentsRef = collection(db, 'posts', post.id, 'comments');
     const q = query(commentsRef, orderBy('createdAt', 'asc'));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const fetchedComments = querySnapshot.docs.map(doc => ({
+      const fetchedComments = querySnapshot.docs.map((doc) => ({
         id: doc.id,
-        message: doc.data().message,
-        createdAt: doc.data().createdAt.toDate(),
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate(),
       }));
       setComments(fetchedComments);
     });
 
-    // Clean up the listener when the component unmounts
     return () => unsubscribe();
   }, [post.id]);
 
-  // Handle posting a new comment
+  // Post a new comment
   const handlePostMessage = async () => {
-    if (newMessage.trim() === '') return;
+    if (!newMessage.trim()) return;
 
+    const user = auth.currentUser;
     try {
       await addDoc(collection(db, 'posts', post.id, 'comments'), {
-        message: newMessage,
+        message: newMessage.trim(),
         createdAt: new Date(),
+        userId: user.uid,
+        displayName: user.displayName || 'Anonymous',
+        likes: 0,
+        dislikes: 0,
       });
-      setNewMessage(''); // Clear input after posting
+      setNewMessage('');
     } catch (error) {
-      console.error("Error posting comment: ", error);
+      Alert.alert('Error', 'Failed to post comment. Please try again.');
     }
   };
 
+  // Handle like and dislike
+  const handleReaction = async (commentId, type) => {
+    const commentRef = doc(db, 'posts', post.id, 'comments', commentId);
+    try {
+      const updatedValue = type === 'like' ? { likes: 1 } : { dislikes: 1 };
+      await updateDoc(commentRef, {
+        [type]: (comments.find((comment) => comment.id === commentId)?.[type] || 0) + 1,
+      });
+    } catch (error) {
+      Alert.alert('Error', 'Failed to update reaction. Please try again.');
+    }
+  };
+
+  // Render comments
+  const renderComment = ({ item }) => (
+    <View
+      style={[
+        styles.commentBox,
+        item.userId === auth.currentUser?.uid ? styles.myComment : styles.otherComment,
+      ]}
+    >
+      <View style={styles.commentContent}>
+        <Text style={styles.userName}>{item.displayName}</Text>
+        <Text style={styles.commentText}>{item.message}</Text>
+        <Text style={styles.commentTime}>
+          {item.createdAt?.toLocaleTimeString() || 'Unknown'}
+        </Text>
+      </View>
+
+      {/* Like and Dislike Buttons */}
+      <View style={styles.reactionContainer}>
+        <TouchableOpacity
+          onPress={() => handleReaction(item.id, 'likes')}
+          style={styles.reactionButton}
+        >
+          <Icon name="thumb-up" size={18} color="#4caf50" />
+          <Text style={styles.reactionCount}>{item.likes || 0}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => handleReaction(item.id, 'dislikes')}
+          style={styles.reactionButton}
+        >
+          <Icon name="thumb-down" size={18} color="#f44336" />
+          <Text style={styles.reactionCount}>{item.dislikes || 0}</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back" size={28} color="#ffffff" />
         </TouchableOpacity>
         <Text style={styles.title}>{post.title}</Text>
       </View>
 
+      {/* Post Description */}
       <Text style={styles.postDescription}>{post.description}</Text>
 
+      {/* Comments */}
       <FlatList
         data={comments}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.commentBox}>
-            <Text style={styles.commentText}>{item.message}</Text>
-          </View>
-        )}
+        renderItem={renderComment}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.commentsContainer}
       />
 
+      {/* Message Input */}
       <View style={styles.messageInputContainer}>
         <TextInput
           style={styles.input}
@@ -85,54 +150,106 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0e4a5d',
-    paddingHorizontal: 20,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 10 : 20,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: '#0e4a5d',
+  },
+  backButton: {
+    marginRight: 16,
   },
   title: {
-    fontSize: 24,
-    color: '#ffffff',
-    textAlign: 'center',
-    marginLeft: 20,
+    fontSize: 20,
     fontWeight: 'bold',
+    color: '#ffffff',
   },
   postDescription: {
     fontSize: 16,
-    color: '#bfe8e0',
-    marginBottom: 20,
+    margin: 16,
+    color: '#ffffff',
+    textAlign: 'justify',
+  },
+  commentsContainer: {
+    paddingHorizontal: 16,
   },
   commentBox: {
-    backgroundColor: '#e0e0e0',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 8,
     padding: 10,
     borderRadius: 8,
-    marginVertical: 5,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  myComment: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#d4f4dd',
+  },
+  otherComment: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#fce7e9',
+  },
+  commentContent: {
+    flex: 1,
+  },
+  userName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#555',
   },
   commentText: {
     fontSize: 14,
     color: '#333',
+    marginVertical: 4,
+  },
+  commentTime: {
+    fontSize: 10,
+    color: '#888',
+  },
+  reactionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  reactionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 4,
+  },
+  reactionCount: {
+    marginLeft: 4,
+    fontSize: 12,
+    color: '#555',
   },
   messageInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
-    backgroundColor: '#ffffff',
+    margin: 10,
+    backgroundColor: '#fff',
     borderRadius: 10,
-    paddingHorizontal: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   input: {
     flex: 1,
-    height: 40,
+    height: 60,
+    paddingHorizontal: 10,
     color: '#333',
   },
   sendButton: {
-    backgroundColor: '#2e6075',
+    backgroundColor: '#0e4a5d',
     padding: 10,
     borderRadius: 10,
-    marginLeft: 10,
+    marginRight: 10,
   },
 });
 
