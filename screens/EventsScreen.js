@@ -1,22 +1,34 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Button, TouchableOpacity, Linking } from 'react-native';
-import * as Progress from 'react-native-progress'; // Import Progress component
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Linking,
+  Modal,
+} from 'react-native';
+import * as Progress from 'react-native-progress';
+import { WebView } from 'react-native-webview'; // Import WebView
 
 const EventsScreen = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [currentUrl, setCurrentUrl] = useState('');
+
   const devOpsEvents = [
     {
       id: 1,
       name: 'DevOps Conference 2024',
       date: 'Jan 15, 2024',
       description: 'A global conference for DevOps professionals to network and learn about the latest trends in DevOps practices.',
-      link: 'https://devops-conference-2024.com'
+      link: 'https://cleancode.training/',
     },
     {
       id: 2,
       name: 'Docker & Kubernetes Workshop',
       date: 'Feb 5, 2024',
       description: 'Hands-on workshop on containerization with Docker and Kubernetes for DevOps practitioners.',
-      link: 'https://docker-k8s-workshop.com'
+      link: 'https://www.udemy.com/course/docker-kubernetes-the-practical-guide/?couponCode=BFCPSALE24',
     },
   ];
 
@@ -26,14 +38,14 @@ const EventsScreen = () => {
       name: 'DevOps Knowledge Quiz',
       date: 'March 10, 2024',
       description: 'Test your knowledge on DevOps concepts and practices in this interactive quiz.',
-      link: 'https://devops-quiz.com'
+      link: 'https://www.techtarget.com/searchitoperations/quiz/DevOps-quiz-What-IT-admins-need-to-know',
     },
     {
       id: 2,
-      name: 'CI/CD Pipeline Quiz',
+      name: 'CI/CD Pipeline Interview Questions',
       date: 'April 18, 2024',
       description: 'Take this quiz to evaluate your understanding of CI/CD pipelines and automation.',
-      link: 'https://cicd-quiz.com'
+      link: 'https://www.interviewbit.com/ci-cd-interview-questions/',
     },
   ];
 
@@ -43,19 +55,20 @@ const EventsScreen = () => {
       name: 'DevOps Hackathon 2024',
       date: 'May 22, 2024',
       description: 'Join the DevOps Hackathon and collaborate with teams to solve real-world DevOps challenges.',
-      link: 'https://devops-hackathon.com'
+      link: 'https://devpost.com/hackathons?themes%5B%5D=DevOps',
     },
     {
       id: 2,
       name: 'Cloud Infrastructure Hackathon',
       date: 'June 10, 2024',
       description: 'Participate in this hackathon to create cloud infrastructure solutions and gain exposure to the latest cloud technologies.',
-      link: 'https://cloud-hackathon.com'
+      link: 'https://innovateindia.mygov.in/nic-cloud-hackathon/',
     },
   ];
 
-  const handleLinkClick = (link) => {
-    Linking.openURL(link).catch((err) => console.error('Failed to open URL:', err));
+  const openWebView = (url) => {
+    setCurrentUrl(url);
+    setModalVisible(true);
   };
 
   const renderEvent = (event) => (
@@ -65,9 +78,9 @@ const EventsScreen = () => {
       <Text style={styles.eventDescription}>{event.description}</Text>
       <TouchableOpacity
         style={styles.linkButton}
-        onPress={() => handleLinkClick(event.link)}
+        onPress={() => openWebView(event.link)}
       >
-        <Text style={styles.linkButtonText}>Go to Event</Text>
+        <Text style={styles.linkButtonText}>View Details</Text>
       </TouchableOpacity>
     </View>
   );
@@ -97,11 +110,20 @@ const EventsScreen = () => {
         {hackathons.map(renderEvent)}
       </View>
 
-      {/* Additional Navigation Buttons */}
-      <View style={styles.buttonContainer}>
-        {/* <Button title="Go to DevOps Screen" onPress={(DevOps) => {}} color="#2e6075" /> */}
-        {/* <Button title="Go to Events" onPress={() => {}} color="#2e6075" /> */}
-      </View>
+      {/* Modal for WebView */}
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <WebView source={{ uri: currentUrl }} style={styles.webView} />
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={() => setModalVisible(false)}
+        >
+          <Text style={styles.closeButtonText}>Close</Text>
+        </TouchableOpacity>
+      </Modal>
     </ScrollView>
   );
 };
@@ -162,10 +184,17 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
   },
-  buttonContainer: {
-    marginTop: 30,
-    marginBottom: 20,
+  webView: {
+    flex: 1,
+  },
+  closeButton: {
+    backgroundColor: '#2e6075',
+    padding: 10,
     alignItems: 'center',
+  },
+  closeButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
   },
 });
 

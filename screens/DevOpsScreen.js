@@ -21,8 +21,7 @@ const DevOpsScreen = () => {
   ]);
 
   const [selectedFile, setSelectedFile] = useState(null);
-  const [progress, setProgress] = useState(0.38);
-  const [collapsed, setCollapsed] = useState({});
+  const [progress, setProgress] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [currentLink, setCurrentLink] = useState(null);
   const navigation = useNavigation();
@@ -53,7 +52,7 @@ const DevOpsScreen = () => {
         <View style={styles.topicContent}>
           <Text style={styles.topicText}>{topic}</Text>
           <TouchableOpacity style={styles.linkButton} onPress={() => handleDropdownToggle(link)}>
-            <Text style={styles.linkButtonText}>Show Details</Text>
+            <Text style={styles.linkButtonText}>Open Document</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -79,7 +78,9 @@ const DevOpsScreen = () => {
         />
       </View>
 
-      {links.map((item, index) => renderTopic(index, item.topic, item.link, item.id))}
+      <View style={styles.linksSection}>
+        {links.map((item, index) => renderTopic(index, item.topic, item.link, item.id))}
+      </View>
 
       <View style={styles.projectContainer}>
         <Text style={styles.projectTitle}>Project</Text>
@@ -91,7 +92,9 @@ const DevOpsScreen = () => {
       </View>
 
       <View style={styles.eventsButtonContainer}>
-        <Button title="Go to Events" onPress={() => navigation.navigate('Events')} color="#2e6075" />
+        <TouchableOpacity style={styles.linkButton} onPress={() => navigation.navigate('Events')}>
+          <Text style={styles.linkButtonText}>Go to Events 🪧</Text>
+        </TouchableOpacity>
       </View>
 
       <Modal visible={modalVisible} animationType="slide" onRequestClose={() => setModalVisible(false)}>
@@ -112,6 +115,7 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 18, color: '#ffffff', textAlign: 'center', marginBottom: 30 },
   progressContainer: { marginVertical: 20, alignItems: 'center' },
   progressText: { fontSize: 16, color: '#ffffff', marginBottom: 10 },
+  linksSection: { marginBottom: 40 },
   topicContainer: { flexDirection: 'row', marginBottom: 20, borderWidth: 1, borderColor: '#2e6075', borderRadius: 10, padding: 15, backgroundColor: '#bfe8e0', maxWidth: '80%' },
   alignLeft: { alignSelf: 'flex-start' },
   alignRight: { alignSelf: 'flex-end' },
@@ -120,11 +124,16 @@ const styles = StyleSheet.create({
   topicText: { fontSize: 20, fontWeight: 'bold', color: '#000000' },
   linkButton: { marginTop: 10, backgroundColor: '#2e6075', padding: 10, borderRadius: 5, alignItems: 'center' },
   linkButtonText: { color: '#ffffff', fontSize: 16 },
-  projectContainer: { marginTop: 30, padding: 20, borderWidth: 1, borderColor: '#2e6075', borderRadius: 10, backgroundColor: '#bfe8e0' },
+  projectContainer: { marginTop: 30, padding: 20, borderWidth: 3, borderColor: '#000000', borderRadius: 10, backgroundColor: '#ffffff' },
   projectTitle: { fontSize: 24, fontWeight: 'bold', color: '#000000' },
-  projectDescription: { marginTop: 10, fontSize: 16, color: '#555' },
+  projectDescription: { marginTop: 10, fontSize: 16, color: '#555', marginBottom: 20, },
   fileName: { marginTop: 10, fontSize: 16, color: '#2e6075' },
-  eventsButtonContainer: { marginTop: 30, alignItems: 'center', marginBottom: 40 },
+  eventsButtonContainer: { 
+    padding: 20, 
+    marginTop: 0, 
+    alignItems: 'center', 
+    marginBottom: 20,
+  },
   modalContainer: { flex: 1, backgroundColor: '#0e4a5d', paddingTop: 40 },
   closeButton: { padding: 10, backgroundColor: '#2e6075', borderRadius: 5, alignItems: 'center', margin: 10, marginBottom: 20 },
   closeButtonText: { color: '#ffffff', fontSize: 16 },

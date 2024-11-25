@@ -20,6 +20,18 @@ const HomeScreen = ({ navigation }) => {
     { id: '4', name: 'Backend', icon: require('../assets/backend.bmp') },
     { id: '5', name: 'Database', icon: require('../assets/database.bmp') },
     { id: '6', name: 'Data Analytics', icon: require('../assets/da.bmp') },
+    { id: '7', name: 'DevOps', icon: require('../assets/devops.bmp') },
+    { id: '8', name: 'AI', icon: require('../assets/ai-icon.jpg') },
+    { id: '9', name: 'WebDev', icon: require('../assets/webdev.bmp') },
+    { id: '10', name: 'Backend', icon: require('../assets/backend.bmp') },
+    { id: '11', name: 'Database', icon: require('../assets/database.bmp') },
+    { id: '12', name: 'Data Analytics', icon: require('../assets/da.bmp') },
+    { id: '12', name: 'DevOps', icon: require('../assets/devops.bmp') },
+    { id: '14', name: 'AI', icon: require('../assets/ai-icon.jpg') },
+    { id: '15', name: 'WebDev', icon: require('../assets/webdev.bmp') },
+    { id: '16', name: 'Backend', icon: require('../assets/backend.bmp') },
+    { id: '17', name: 'Database', icon: require('../assets/database.bmp') },
+    { id: '18', name: 'Data Analytics', icon: require('../assets/da.bmp') },
   ];
 
   const filteredDomains = domains.filter(domain =>
@@ -59,19 +71,19 @@ const HomeScreen = ({ navigation }) => {
           style={styles.navButton}
           onPress={() => navigation.navigate('Forum')}
         >
-          <Text style={styles.navButtonText}>Forum</Text>
+          <Text style={styles.navButtonText}>Forum 💬</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navButton}
           onPress={() => navigation.navigate('Todo')}
         >
-          <Text style={styles.navButtonText}>Todo</Text>
+          <Text style={styles.navButtonText}>Todo 🗓️</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navButton}
           onPress={() => navigation.navigate('Study')}
         >
-          <Text style={styles.navButtonText}>Study</Text>
+          <Text style={styles.navButtonText}>Study 📖</Text>
         </TouchableOpacity>
       </View>
 
