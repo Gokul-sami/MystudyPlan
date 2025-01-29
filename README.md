@@ -1,7 +1,7 @@
 ```markdown
 # MystudyPlan
 
-MystudyPlan is a JavaScript-based application designed to help users create and manage their study plans efficiently.
+MystudyPlan is a JavaScript-based application designed to help users create and manage their study plans efficiently. It leverages the React Native framework to provide a seamless and responsive user experience on both iOS and Android devices. The app allows users to set study goals, track progress, and manage their study schedules in a structured manner.
 
 ## Features
 
