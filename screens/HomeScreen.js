@@ -4,15 +4,20 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { Roboto_400Regular } from '@expo-google-fonts/roboto';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Picker } from '@react-native-picker/picker';
 
 const HomeScreen = ({ navigation }) => {
-  SplashScreen.preventAutoHideAsync();
+  useEffect(() => {
+    SplashScreen.preventAutoHideAsync();
+  }, []);
 
   const [fontsLoaded] = useFonts({
     Roboto: Roboto_400Regular,
   });
 
   const [searchText, setSearchText] = useState('');
+  const [selectedDomain, setSelectedDomain] = useState('');
+  
   const domains = [
     { id: '1', name: 'DevOps', icon: require('../assets/devops.bmp') },
     { id: '2', name: 'AI', icon: require('../assets/ai-icon.jpg') },
@@ -47,6 +52,8 @@ const HomeScreen = ({ navigation }) => {
   if (!fontsLoaded) {
     return null;
   }
+
+  const [showForm, setShowForm] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -86,6 +93,42 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.navButtonText}>Study 📖</Text>
         </TouchableOpacity>
       </View>
+
+      <TouchableOpacity
+        style={styles.createTopicButton}
+        onPress={() => setShowForm(!showForm)}
+      >
+        <Text style={styles.createTopicButtonText}>
+          {showForm ? 'Close Form' : 'Study New Topic'}
+        </Text>
+      </TouchableOpacity>
+
+      {showForm && (
+        <View style={styles.formContainer}>
+          <Text style={styles.formTitle}>Help us create your personalised study path</Text>
+          <Text style={styles.label}>Select your Topic:</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={selectedDomain}
+              style={styles.picker}
+              onValueChange={(itemValue) => setSelectedDomain(itemValue)}
+            >
+              {domains.map((domain) => (
+                <Picker.Item key={domain.id} label={domain.name} value={domain.name} />
+              ))}
+            </Picker>
+          </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Describe your learning goals"
+            placeholderTextColor="#888"
+            multiline
+          />
+          <TouchableOpacity style={styles.submitButton}>
+            <Text style={styles.submitButtonText}>Submit</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       <Text style={styles.title}>Choose Your Domain</Text>
 
@@ -160,7 +203,65 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     marginVertical: 18,
     fontFamily: 'Roboto',
-    textAlign: 'center',
+  },
+  createTopicButton: {
+    backgroundColor: '#94d2bd',
+    paddingVertical: 18,
+    paddingHorizontal: 25,
+    borderRadius: 12,
+    marginHorizontal: 6,
+    marginBottom: 20,
+    color: '#0e4a5d',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  formContainer: {
+    backgroundColor: '#005f73',
+    padding: 20,
+    borderRadius: 12,
+    width: '100%',
+    marginBottom: 20,
+  },
+  formTitle: {
+    fontSize: 18,
+    color: '#ffffff',
+    marginBottom: 10,
+    fontFamily: 'Roboto',
+    fontWeight: 'bold',
+  },
+  label: {
+    fontSize: 16,
+    color: '#ffffff',
+    marginBottom: 10,
+  },
+  pickerContainer: {
+    backgroundColor: '#0e4a5d',
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    color: '#ffffff',
+  },
+  input: {
+    backgroundColor: '#0e4a5d',
+    padding: 10,
+    borderRadius: 12,
+    marginBottom: 20,
+    textAlignVertical: 'top',
+    color: '#ffffff',
+  },
+  submitButton: {
+    backgroundColor: '#94ffbd',
+    padding: 15,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  submitButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   grid: {
     justifyContent: 'center',
