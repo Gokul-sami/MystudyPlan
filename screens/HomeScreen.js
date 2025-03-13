@@ -118,9 +118,25 @@ const HomeScreen = ({ navigation }) => {
               ))}
             </Picker>
           </View>
+          <Text style={styles.label}>What is your current level of knowledge in this topic?</Text>
           <TextInput
             style={styles.input}
-            placeholder="Describe your learning goals"
+            placeholder="Beginner, Intermediate, Advanced"
+            placeholderTextColor="#888"
+          />
+
+          <Text style={styles.label}>How many hours per week can you dedicate to studying this topic?</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="e.g., 5 hours"
+            placeholderTextColor="#888"
+            keyboardType="numeric"
+          />
+
+          <Text style={styles.label}>Give us more information </Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Describe your learning strategy, methods, goals"
             placeholderTextColor="#888"
             multiline
           />
@@ -211,6 +227,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginHorizontal: 6,
     marginBottom: 20,
+  },
+  createTopicButtonText: {
     color: '#0e4a5d',
     fontSize: 14,
     fontWeight: 'bold',
@@ -223,9 +241,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   formTitle: {
-    fontSize: 18,
+    textAlign: 'center',
+    fontSize: 20,
     color: '#ffffff',
-    marginBottom: 10,
+    marginBottom: 25,
     fontFamily: 'Roboto',
     fontWeight: 'bold',
   },
@@ -257,6 +276,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 12,
     alignItems: 'center',
+    marginTop: 20,
   },
   submitButtonText: {
     color: '#ffffff',
