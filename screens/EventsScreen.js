@@ -10,8 +10,11 @@ import {
 } from 'react-native';
 import * as Progress from 'react-native-progress';
 import { WebView } from 'react-native-webview'; // Import WebView
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import Icon from 'react-native-vector-icons/MaterialIcons'; // Import Icon
 
 const EventsScreen = () => {
+  const navigation = useNavigation(); // Initialize navigation
   const [modalVisible, setModalVisible] = useState(false);
   const [currentUrl, setCurrentUrl] = useState('');
 
@@ -87,7 +90,12 @@ const EventsScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Upcoming DevOps Events</Text>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon name="arrow-back" size={24} color="#ffffff" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Upcoming DevOps Events</Text>
+      </View>
 
       {/* DevOps Events Section */}
       <View style={styles.sectionContainer}>
@@ -136,11 +144,10 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
+    fontSize: 24,
     color: '#ffffff',
     textAlign: 'center',
-    marginBottom: 20,
+    flex: 1,
   },
   sectionContainer: {
     marginVertical: 20,
@@ -195,6 +202,17 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: '#ffffff',
     fontSize: 16,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  backButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginRight: 10,
   },
 });
 

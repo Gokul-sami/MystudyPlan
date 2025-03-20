@@ -4,20 +4,28 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import { Roboto_400Regular } from '@expo-google-fonts/roboto';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Picker } from '@react-native-picker/picker';
 
 const HomeScreen = ({ navigation }) => {
-  useEffect(() => {
-    SplashScreen.preventAutoHideAsync();
-  }, []);
-
   const [fontsLoaded] = useFonts({
     Roboto: Roboto_400Regular,
   });
 
   const [searchText, setSearchText] = useState('');
-  const [selectedDomain, setSelectedDomain] = useState('');
-  
+
+  useEffect(() => {
+    SplashScreen.preventAutoHideAsync();
+  }, []);
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   const domains = [
     { id: '1', name: 'DevOps', icon: require('../assets/devops.bmp') },
     { id: '2', name: 'AI', icon: require('../assets/ai-icon.jpg') },
@@ -43,17 +51,46 @@ const HomeScreen = ({ navigation }) => {
     domain.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
-  const [showForm, setShowForm] = useState(false);
+  // const renderForm = () => (
+  //   <View style={styles.formContainer}>
+  //     <Text style={styles.formTitle}>Help us create your personalised study path</Text>
+  //     <Text style={styles.label}>Select your Topic:</Text>
+  //     <View style={styles.pickerContainer}>
+  //       <Picker
+  //         selectedValue={selectedDomain}
+  //         style={styles.picker}
+  //         onValueChange={(itemValue) => setSelectedDomain(itemValue)}
+  //       >
+  //         {domains.map((domain) => (
+  //           <Picker.Item key={domain.id} label={domain.name} value={domain.name} />
+  //         ))}
+  //       </Picker>
+  //     </View>
+  //     <Text style={styles.label}>What is your current level of knowledge in this topic?</Text>
+  //     <TextInput
+  //       style={styles.input}
+  //       placeholder="Beginner, Intermediate, Advanced"
+  //       placeholderTextColor="#888"
+  //     />
+  //     <Text style={styles.label}>How many hours per week can you dedicate to studying this topic?</Text>
+  //     <TextInput
+  //       style={styles.input}
+  //       placeholder="e.g., 5 hours"
+  //       placeholderTextColor="#888"
+  //       keyboardType="numeric"
+  //     />
+  //     <Text style={styles.label}>Give us more information </Text>
+  //     <TextInput
+  //       style={styles.input}
+  //       placeholder="Describe your learning strategy, methods, goals"
+  //       placeholderTextColor="#888"
+  //       multiline
+  //     />
+  //     <TouchableOpacity style={styles.submitButton}>
+  //       <Text style={styles.submitButtonText}>Submit</Text>
+  //     </TouchableOpacity>
+  //   </View>
+  // );
 
   return (
     <View style={styles.container}>
@@ -73,96 +110,58 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.topNav}>
+      <View style={styles.bottomNav}>
         <TouchableOpacity
           style={styles.navButton}
           onPress={() => navigation.navigate('Forum')}
         >
-          <Text style={styles.navButtonText}>Forum 💬</Text>
+          <Text style={styles.navButtonText}>Forum</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navButton}
           onPress={() => navigation.navigate('Todo')}
         >
-          <Text style={styles.navButtonText}>Todo 🗓️</Text>
+          <Text style={styles.navButtonText}>Todo</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navButton}
           onPress={() => navigation.navigate('Study')}
         >
-          <Text style={styles.navButtonText}>Study 📖</Text>
+          <Text style={styles.navButtonText}>MyStudy</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate('Study')}
+        >
+          <Text style={styles.navButtonText}>Docs</Text>
         </TouchableOpacity>
       </View>
 
       <TouchableOpacity
         style={styles.createTopicButton}
-        onPress={() => setShowForm(!showForm)}
+        onPress={() => navigation.navigate('CreateStudyPath')}
       >
-        <Text style={styles.createTopicButtonText}>
-          {showForm ? 'Close Form' : 'Study New Topic'}
-        </Text>
+        <Text style={styles.createTopicButtonText}>Study New Topic</Text>
       </TouchableOpacity>
 
-      {showForm && (
-        <View style={styles.formContainer}>
-          <Text style={styles.formTitle}>Help us create your personalised study path</Text>
-          <Text style={styles.label}>Select your Topic:</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={selectedDomain}
-              style={styles.picker}
-              onValueChange={(itemValue) => setSelectedDomain(itemValue)}
+      <View style={{ flex: 1 }}>
+        <Text style={styles.title}>Popular Topics</Text>
+        <FlatList
+          data={filteredDomains}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          contentContainerStyle={styles.grid}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={styles.domainBox}
+              onPress={() => navigation.navigate('DevOps')}
             >
-              {domains.map((domain) => (
-                <Picker.Item key={domain.id} label={domain.name} value={domain.name} />
-              ))}
-            </Picker>
-          </View>
-          <Text style={styles.label}>What is your current level of knowledge in this topic?</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Beginner, Intermediate, Advanced"
-            placeholderTextColor="#888"
-          />
-
-          <Text style={styles.label}>How many hours per week can you dedicate to studying this topic?</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="e.g., 5 hours"
-            placeholderTextColor="#888"
-            keyboardType="numeric"
-          />
-
-          <Text style={styles.label}>Give us more information </Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Describe your learning strategy, methods, goals"
-            placeholderTextColor="#888"
-            multiline
-          />
-          <TouchableOpacity style={styles.submitButton}>
-            <Text style={styles.submitButtonText}>Submit</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-
-      <Text style={styles.title}>Choose Your Domain</Text>
-
-      <FlatList
-        data={filteredDomains}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        contentContainerStyle={styles.grid}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.domainBox}
-            onPress={() => navigation.navigate('DevOps')}
-          >
-            <Image source={item.icon} style={styles.icon} />
-            <Text style={styles.domainText}>{item.name}</Text>
-          </TouchableOpacity>
-        )}
-      />
+              <Image source={item.icon} style={styles.icon} />
+              <Text style={styles.domainText}>{item.name}</Text>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
     </View>
   );
 };
@@ -171,7 +170,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0e4a5d',
-    paddingHorizontal: 16,
+    paddingHorizontal: 10,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 10 : 10,
     alignItems: 'center',
   },
@@ -182,10 +181,10 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     backgroundColor: '#ffffff',
-    padding: 8,
+    padding: 12,
     borderRadius: 12,
     fontSize: 14,
-    width: '75%',
+    width: '85%',
     marginRight: 8,
     color: '#333',
     elevation: 1,
@@ -193,21 +192,31 @@ const styles = StyleSheet.create({
   profileButton: {
     backgroundColor: '#005f73',
     padding: 10,
-    borderRadius: 12,
+    borderRadius: 100,
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
     elevation: 1,
   },
-  topNav: {
+  bottomNav: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-    marginBottom: 20,
+    marginTop: 8,
+    marginBottom: 10,
   },
   navButton: {
     backgroundColor: '#94d2bd',
-    paddingVertical: 8,
-    paddingHorizontal: 18,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     borderRadius: 12,
     marginHorizontal: 6,
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    flex: 1,
+    maxWidth: 80,
+    maxHeight: 40,
   },
   navButtonText: {
     color: '#0e4a5d',
@@ -216,22 +225,26 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    color: '#ffffff',
-    marginVertical: 18,
+    color: '#94d2bd',
+    marginVertical: 6,
     fontFamily: 'Roboto',
   },
   createTopicButton: {
     backgroundColor: '#94d2bd',
-    paddingVertical: 18,
+    paddingVertical: 15,
     paddingHorizontal: 25,
     borderRadius: 12,
     marginHorizontal: 6,
-    marginBottom: 20,
+    marginBottom: 10,
+    width: '50%',
   },
   createTopicButtonText: {
     color: '#0e4a5d',
     fontSize: 14,
     fontWeight: 'bold',
+    justifyContent: 'center',
+    textAlign: 'center',
+    width: '100%',
   },
   formContainer: {
     backgroundColor: '#005f73',

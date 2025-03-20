@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { WebView } from 'react-native-webview';
 import * as Progress from 'react-native-progress'; // Import the progress bar
+import Icon from 'react-native-vector-icons/MaterialIcons'; // Import Icon
 
 const DevOpsScreen = () => {
   const [links, setLinks] = useState([
@@ -61,7 +62,12 @@ const DevOpsScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>DevOps Learning Path</Text>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon name="arrow-back" size={24} color="#ffffff" />
+        </TouchableOpacity>
+        <Text style={styles.title}>DevOps Learning Path</Text>
+      </View>
       <Text style={styles.subtitle}>Follow the topics from beginning to end to learn DevOps</Text>
 
       <View style={styles.progressContainer}>
@@ -138,6 +144,17 @@ const styles = StyleSheet.create({
   closeButton: { padding: 10, backgroundColor: '#2e6075', borderRadius: 5, alignItems: 'center', margin: 10, marginBottom: 20 },
   closeButtonText: { color: '#ffffff', fontSize: 16 },
   webView: { flex: 1 },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  backButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginRight: 10,
+  },
 });
 
 export default DevOpsScreen;

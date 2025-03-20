@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { getAuth, signOut, updateProfile } from 'firebase/auth';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import Icon from 'react-native-vector-icons/MaterialIcons'; // Import Icon
 
 const ProfileScreen = ({ navigation }) => {
+  const nav = useNavigation(); // Initialize navigation
   const [userInfo, setUserInfo] = useState({
     email: '',
     name: 'Your name',
@@ -100,7 +103,12 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Profile</Text>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => nav.goBack()}>
+          <Icon name="arrow-back" size={24} color="#ffffff" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Profile</Text>
+      </View>
 
       <View style={styles.profileCard}>
         {/* Profile Picture */}
@@ -156,8 +164,8 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 28,
     fontWeight: 'bold',
-    textAlign: 'center',
     marginVertical: 20,
+    textAlign: 'center',
   },
   profileCard: {
     backgroundColor: '#2a6b7d',
@@ -241,6 +249,29 @@ const styles = StyleSheet.create({
   selectedImage: {
     borderWidth: 3,
     borderColor: '#ffffff',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 16,
+    backgroundColor: '#ffffff',
+    padding: 10,
+    borderRadius: 5,
+  },
+  backButtonText: {
+    color: '#0e4a5d',
+    fontWeight: 'bold',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  backButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginRight: 10,
   },
 });
 

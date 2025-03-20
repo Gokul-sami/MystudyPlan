@@ -13,6 +13,7 @@ import TodoScreen from './screens/TodoScreen';
 import StudyScreen from './screens/StudyScreen';
 import EventsScreen from './screens/EventsScreen';
 import PostDetailScreen from './screens/PostDetailScreen';
+import CreateStudyPath from './screens/CreateStudyPath';
 
 const Stack = createStackNavigator();
 
@@ -50,6 +51,7 @@ export default function App() {
         <Stack.Screen name="Study" component={StudyScreen} />
         <Stack.Screen name="Events" component={EventsScreen} />
         <Stack.Screen name="PostDetail" component={PostDetailScreen} />
+        <Stack.Screen name="CreateStudyPath" component={CreateStudyPath} />
       </Stack.Navigator>
     </NavigationContainer>
   );
